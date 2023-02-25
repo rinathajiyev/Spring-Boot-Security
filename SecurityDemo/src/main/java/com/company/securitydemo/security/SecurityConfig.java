@@ -59,19 +59,16 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception{
        return http
-//                .csrf (csrf->csrf.disable())
+                .csrf (csrf->csrf.disable())
                 .authorizeRequests(
                         auth -> {
                             auth.antMatchers("/", "css/*", "js/*", "index").permitAll();
                             auth.antMatchers("/api/**").hasRole(STUDENT.name());
-//                            auth.antMatchers(HttpMethod.DELETE, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission());
-//                            auth.antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission());
-//                            auth.antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission());
-//                            auth.antMatchers(HttpMethod.GET, "/management/api/**").hasAnyRole(ADMIN.name(), ADMIN_TRAINEE.name());
                             auth.anyRequest().authenticated();
                 })
-                .httpBasic()
-                .and().build();
+                .formLogin()
+                .and()
+                .build();
     }
 
 }
