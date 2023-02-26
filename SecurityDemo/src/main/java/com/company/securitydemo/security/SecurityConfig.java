@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.password.*;
 import org.springframework.security.provisioning.*;
 import org.springframework.security.web.*;
+import org.springframework.security.web.util.matcher.*;
+
+import java.util.concurrent.*;
 
 import static com.company.securitydemo.security.UserPermission.COURSE_WRITE;
 import static com.company.securitydemo.security.UserRole.*;
@@ -66,8 +69,31 @@ public class SecurityConfig {
                             auth.antMatchers("/api/**").hasRole(STUDENT.name());
                             auth.anyRequest().authenticated();
                 })
-                .formLogin()
-                .and()
+                .formLogin(
+                        form ->{
+                            form.loginPage("/login").permitAll();
+                            form.defaultSuccessUrl("/courses");
+                            form.usernameParameter("username");
+                            form.passwordParameter("password");
+                        }
+                )
+                .rememberMe(
+                        remember ->{
+                            remember.tokenValiditySeconds((int)TimeUnit.DAYS.toSeconds(15));
+                            remember.key("keyToHashTheContent");
+                            remember.rememberMeParameter("remember-me");
+                        }
+                )
+               .logout(
+                       logout->{
+                           logout.logoutUrl("/logout");
+                           logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"));
+                           logout.clearAuthentication(true);
+                           logout.invalidateHttpSession(true);
+                           logout.deleteCookies("JSESSIONID", "remember-me");
+                           logout.logoutSuccessUrl("/login");
+                       }
+               )
                 .build();
     }
 
