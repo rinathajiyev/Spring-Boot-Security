@@ -3,6 +3,7 @@ package com.company.securitydemo.config;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.*;
 import io.jsonwebtoken.security.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.*;
 
@@ -12,7 +13,9 @@ import java.util.function.*;
 
 @Service
 public class JwtService {
-    private String secretKey = "5468566D597133743677397A24432646294A404E635266556A586E5A72347537";
+
+    @Value("${application.security.jwt.secret-key}")
+    private String secretKey;
 
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
@@ -37,11 +40,11 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private String generateToken(UserDetails userDetails){
+    public String generateToken(UserDetails userDetails){
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    private String generateToken(
+    public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ){

@@ -13,7 +13,7 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="user")
+@Table(name="_user")
 public class User implements UserDetails {
 
     @Id

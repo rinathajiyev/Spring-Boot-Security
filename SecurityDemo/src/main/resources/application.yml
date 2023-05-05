@@ -13,3 +13,8 @@ spring:
         format-sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+application:
+  security:
+    jwt:
+      secret-key: 5468566D597133743677397A24432646294A404E635266556A586E5A72347537
